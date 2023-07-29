@@ -1,5 +1,3 @@
-using Valuation = System.Collections.Generic.Dictionary<string, double>;
-
 public class Evaluator
 {
     private readonly Expression expression;
