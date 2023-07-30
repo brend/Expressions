@@ -17,6 +17,9 @@ public class Evaluator
     public double Evaluate(Valuation valuation) 
         => EvaluateExpression(valuation, Expression);
 
+    public double Evaluate(params object[] args)
+        => EvaluateExpression(Valuation.Create(args), Expression);
+
     public double Evaluate(double x) 
         => Evaluate(new Valuation {["x"] = x});
 
