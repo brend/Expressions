@@ -1,17 +1,17 @@
 using System.Text;
 
-namespace Lexer;
+namespace Lex;
 
 public class Lexer
 {
     private readonly string expression;
-    private readonly TextReader reader;
+    private readonly Reader reader;
     private readonly Queue<Token> lookahead = new Queue<Token>();
 
     public Lexer(string expression)
     {
         this.expression = expression;
-        this.reader = new StringReader(expression);
+        this.reader = new Reader(expression);
     }
 
     public Token? Peek()
@@ -66,7 +66,7 @@ public class Lexer
         return ReadOperator();
    }
 
-   private void ConsumeWhitespace()
+    private void ConsumeWhitespace()
     {
          while (true)
          {
@@ -107,7 +107,9 @@ public class Lexer
             }
         }
 
-        return new Constant(double.Parse(builder.ToString()));
+        var text = builder.ToString();
+
+        return new Constant(text, reader.Row, reader.Col, double.Parse(text));
     }
 
     private Token ReadVariable()
@@ -131,7 +133,9 @@ public class Lexer
             }
         }
 
-        return new Variable(builder.ToString());
+        var text = builder.ToString();
+
+        return new Variable(text, reader.Row, reader.Col, text);
     }
 
     private Token ReadOperator()
@@ -140,78 +144,97 @@ public class Lexer
         switch (c)
         {
             case '+':
-                return new Plus();
+                return new Plus(c.ToString(), reader.Row, reader.Col);
             case '-':
-                return new Minus();
+                return new Minus(c.ToString(), reader.Row, reader.Col);
             case '*':
-                return new Multiply();
+                return new Multiply(c.ToString(), reader.Row, reader.Col);
             case '/':
-                return new Divide();
+                return new Divide(c.ToString(), reader.Row, reader.Col);
             case '(':
-                return new LParen();
+                return new LParen(c.ToString(), reader.Row, reader.Col);
             case ')':
-                return new RParen();
+                return new RParen(c.ToString(), reader.Row, reader.Col);
             default:
-                throw new Exception($"Unexpected character: {c}");
+                throw new Exception($"Unexpected character in {reader.Row}:{reader.Col}: {c}");
         }
     }
 }
 
-public interface Token
+public abstract class Token
 {
-    string Text { get; }
+    public string Text { get; }
+    public int Row { get; }
+    public int Col { get; }
+
+    protected Token(string text, int row, int col)
+    {
+        Text = text;
+        Row = row;
+        Col = col;
+    }
 }
 
-public struct Constant: Token
+public class Constant: Token
 {
     public readonly double Value;
 
-    public Constant(double value)
+    public Constant(string text, int row, int col, double value)
+    : base(text, row, col)
     {
         Value = value;
     }
-
-    public string Text => Value.ToString();
 }
 
-public struct Variable: Token
+public class Variable: Token
 {
     public readonly string Name;
 
-    public Variable(string name)
+    public Variable(string text, int row, int col, string name)
+    : base(text, row, col)
     {
         Name = name;
     }
-
-    public string Text => Name;
 }
 
-public struct Plus: Token 
+public class Plus: Token 
 {
-    public string Text => "+";
+    public Plus(string text, int row, int col): base(text, row, col)
+    {
+    }
 }
 
-public struct Minus: Token
+public class Minus: Token
 {
-    public string Text => "-";
+    public Minus(string text, int row, int col): base(text, row, col)
+    {
+    }
 }
 
-public struct Multiply: Token
+public class Multiply: Token
 {
-    public string Text => "*";
+    public Multiply(string text, int row, int col): base(text, row, col)
+    {
+    }
 }
 
-public struct Divide: Token 
+public class Divide: Token 
 {
-    public string Text => "/";
+    public Divide(string text, int row, int col): base(text, row, col)
+    {
+    }
 }
 
-public struct LParen: Token 
+public class LParen: Token 
 {
-    public string Text => "(";
+    public LParen(string text, int row, int col): base(text, row, col)
+    {
+    }
 }
 
-public struct RParen: Token 
+public class RParen: Token 
 {
-    public string Text => ")";
+    public RParen(string text, int row, int col): base(text, row, col)
+    {
+    }
 }

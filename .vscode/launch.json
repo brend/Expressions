@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/bin/Debug/net7.0/Expressions.dll",
-            "args": [],
+            "args": ["x*3 + y*2", "x=2", "y=4"],
             "cwd": "${workspaceFolder}",
             "console": "internalConsole",
             "stopAtEntry": false

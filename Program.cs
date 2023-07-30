@@ -32,6 +32,36 @@ void DemoRectangleArea()
     }
 }
 
-DemoFarenheitToCelsius();
-DemoDegreesToRadians();
-DemoRectangleArea();
+if (args.Length == 0)
+{
+    DemoFarenheitToCelsius();
+    DemoDegreesToRadians();
+    DemoRectangleArea();
+}
+else
+{
+    var expression = args[0];
+
+    System.Console.WriteLine("Attempting to parse expression: \"" + expression + "\"");
+
+    var evaluator = new Evaluator(expression);
+
+    System.Console.WriteLine("Parsed expression: " + evaluator.Expression);
+
+    var valuation = Valuation.Math();
+
+    for (int i = 1; i < args.Length; ++i)
+    {
+        var assignment = args[i].Split('=');
+        
+        if (assignment.Length != 2)
+        {
+            Console.Error.WriteLine("Invalid assignment: " + args[i]);
+            continue;
+        }
+
+        valuation[assignment[0]] = double.Parse(assignment[1]);
+    }
+
+    System.Console.WriteLine("Evaluation result: " + evaluator.Evaluate(valuation));
+}

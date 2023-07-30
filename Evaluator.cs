@@ -1,19 +1,21 @@
+using Exp;
+
 public class Evaluator
 {
-    private readonly Expression expression;
+    public Expression Expression { get; }
 
     public Evaluator(Expression expression)
     {
-        this.expression = expression;
+        Expression = expression;
     }
 
     public Evaluator(string expression)
     {
-        this.expression = new Parser(expression).Parse();
+        Expression = new Parse.Parser(expression).Parse();
     }
 
     public double Evaluate(Valuation valuation) 
-        => EvaluateExpression(valuation, expression);
+        => EvaluateExpression(valuation, Expression);
 
     public double Evaluate(double x) 
         => Evaluate(new Valuation {["x"] = x});
