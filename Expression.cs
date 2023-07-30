@@ -13,6 +13,8 @@ public struct Constant: Expression
     {
         Value = value;
     }
+
+    public override string ToString() => Value.ToString();
 }
 
 public struct Variable: Expression
@@ -23,6 +25,8 @@ public struct Variable: Expression
     {
         Name = name;
     }
+
+    public override string ToString() => Name;
 }
 
 public enum BinaryOperationType
@@ -50,6 +54,25 @@ public struct BinaryOperation: Expression
         Right = right;
         Type = type;
     }
+
+    public override string ToString() => $"({Left} {TypeToString()} {Right})";
+
+    private string TypeToString()
+    {
+        switch (Type)
+        {
+            case BinaryOperationType.Add:
+                return "+";
+            case BinaryOperationType.Subtract:
+                return "-";
+            case BinaryOperationType.Multiply:
+                return "*";
+            case BinaryOperationType.Divide:
+                return "/";
+            default:
+                throw new Exception($"Unknown binary operation type: {Type}");
+        }
+    }
 }
 
 public struct UnaryOperation: Expression
@@ -61,5 +84,18 @@ public struct UnaryOperation: Expression
     {
         Expression = expression;
         Type = type;
+    }
+
+    public override string ToString() => $"({TypeToString()}{Expression})";
+
+    private string TypeToString()
+    {
+        switch (Type)
+        {
+            case UnaryOperationType.Negate:
+                return "-";
+            default:
+                throw new Exception($"Unknown unary operation type: {Type}");
+        }
     }
 }
