@@ -34,6 +34,13 @@ void DemoRectangleArea()
 
 if (args.Length == 0)
 {
+    Console.Error.WriteLine("Usage: dotnet run [--demo] \"<expression>\" [variable=value ...]");
+    System.Console.WriteLine("Example: dotnet run \"(x - 32) * 5/9\" x=212");
+    return;
+}
+
+if (args.Length > 0 && args[0] == "--demo")
+{
     DemoFarenheitToCelsius();
     DemoDegreesToRadians();
     DemoRectangleArea();
